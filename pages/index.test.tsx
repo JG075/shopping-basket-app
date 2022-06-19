@@ -7,4 +7,7 @@ describe("Index", () => {
         const { getByText } = render(<Index />)
         expect(getByText("Loading...")).toBeInTheDocument()
     })
+    it("renders an error state", () => {})
+    it("renders a list of products", () => {})
+    it("allows a user to add a product to the cart", () => {})
 })
