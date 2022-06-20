@@ -1,6 +1,6 @@
 import Product from "../models/product"
 
-interface SuccessResponse {
+export interface SuccessResponse {
     data: Product[]
 }
 
