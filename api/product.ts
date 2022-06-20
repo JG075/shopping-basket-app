@@ -35,7 +35,7 @@ const get = () => {
                 return new Product(p)
             })
             success({ data: parsedReponse })
-        }, 2000)
+        }, 1000)
     })
 }
 

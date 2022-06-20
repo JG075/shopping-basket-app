@@ -1,4 +1,5 @@
 import { immerable } from "immer"
+import { GBP } from "../utils/currency"
 
 interface ProductAttrs {
     id: number
@@ -13,6 +14,10 @@ class Product {
 
     constructor(opts: ProductAttrs) {
         Object.assign(this, opts)
+    }
+
+    get displayCost() {
+        return GBP(this.cost).format()
     }
 }
 

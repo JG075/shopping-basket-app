@@ -1,8 +1,8 @@
 import type { NextPage } from "next"
 import Head from "next/head"
-import Image from "next/image"
 import { useEffect, useState } from "react"
 import productAPI, { SuccessResponse } from "../api/product"
+import ProductListItem from "../components/index/ProductListItem"
 
 import styles from "../styles/Home.module.css"
 
@@ -28,13 +28,20 @@ const Home: NextPage = () => {
         if (!data) return <p>Loading...</p>
 
         return (
-            <ul>
-                {data.map(({ id, name, thumbnail, cost }) => {
+            <ul
+                css={{
+                    listStyle: "none",
+                    paddingLeft: 0,
+                    li: {
+                        marginBottom: 20,
+                    },
+                    width: "100%",
+                }}
+            >
+                {data.map(({ id, name, thumbnail, displayCost }) => {
                     return (
                         <li key={id}>
-                            <Image src={thumbnail} alt={name} height={250} width={250} />
-                            <span>{name}</span>
-                            <span>£{cost}</span>
+                            <ProductListItem name={name} thumbnail={thumbnail} cost={displayCost} />
                         </li>
                     )
                 })}
