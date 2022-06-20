@@ -1,7 +1,18 @@
 import Product from "../models/product"
 
+interface SuccessResponse {
+    data: Product[]
+}
+
+interface RejectResponse {
+    error: {
+        status: number
+        message: string
+    }
+}
+
 const MOCK_RESPONSE = {
-    result: [
+    data: [
         {
             id: 1,
             name: "Face Mask",
@@ -18,16 +29,18 @@ const MOCK_RESPONSE = {
 }
 
 const get = () => {
-    return new Promise((success) => {
+    return new Promise((success: (arg: SuccessResponse) => void, reject: (arg: RejectResponse) => void) => {
         setTimeout(() => {
-            const parsedReponse = MOCK_RESPONSE.result.map((p) => {
+            const parsedReponse = MOCK_RESPONSE.data.map((p) => {
                 return new Product(p)
             })
-            success(parsedReponse)
+            success({ data: parsedReponse })
         }, 2000)
     })
 }
 
-export default {
+const api = {
     get,
 }
+
+export default api

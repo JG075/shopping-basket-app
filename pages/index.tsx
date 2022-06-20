@@ -7,10 +7,15 @@ import styles from "../styles/Home.module.css"
 
 const Home: NextPage = () => {
     const [fetching, setFetching] = useState(false)
+    const [error, setError] = useState(false)
 
     const fetchData = async () => {
         setFetching(true)
-        const response = await productAPI.get()
+        try {
+            const data = await productAPI.get()
+        } catch (error) {
+            setError(true)
+        }
         setFetching(false)
     }
 
@@ -20,6 +25,7 @@ const Home: NextPage = () => {
 
     const renderProducts = () => {
         if (fetching) return <p>Loading...</p>
+        if (error) return <p>Error!</p>
     }
 
     return (
