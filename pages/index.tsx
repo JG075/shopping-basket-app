@@ -2,7 +2,9 @@ import type { NextPage } from "next"
 import Head from "next/head"
 import { useEffect, useState } from "react"
 import productAPI, { SuccessResponse } from "../api/product"
-import ProductListItem from "../components/index/ProductListItem"
+import ProductList from "../components/index/ProductList"
+import ShoppingBasket from "../components/index/ShoppingBasket"
+import SubHeading from "../components/index/SubHeading"
 
 import styles from "../styles/Home.module.css"
 
@@ -26,27 +28,7 @@ const Home: NextPage = () => {
     const renderProducts = () => {
         if (error) return <p>Error!</p>
         if (!data) return <p>Loading...</p>
-
-        return (
-            <ul
-                css={{
-                    listStyle: "none",
-                    paddingLeft: 0,
-                    li: {
-                        marginBottom: 20,
-                    },
-                    width: "100%",
-                }}
-            >
-                {data.map(({ id, name, thumbnail, displayCost }) => {
-                    return (
-                        <li key={id}>
-                            <ProductListItem name={name} thumbnail={thumbnail} cost={displayCost} />
-                        </li>
-                    )
-                })}
-            </ul>
-        )
+        return <ProductList products={data} />
     }
 
     return (
@@ -58,7 +40,14 @@ const Home: NextPage = () => {
             </Head>
             <main className={styles.main}>
                 <h1>Nextjs Shopping Cart</h1>
-                {renderProducts()}
+                <section data-id="products">
+                    <SubHeading name="Products" />
+                    {renderProducts()}
+                </section>
+                <section>
+                    <SubHeading name="Basket" />
+                    <ShoppingBasket />
+                </section>
             </main>
         </div>
     )

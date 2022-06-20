@@ -1,4 +1,4 @@
-import { render, waitFor, waitForElementToBeRemoved, within } from "@testing-library/react"
+import { render, waitFor, waitForElementToBeRemoved } from "@testing-library/react"
 
 import productApi, { SuccessResponse } from "../api/product"
 import Product from "../models/product"
