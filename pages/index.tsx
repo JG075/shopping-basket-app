@@ -35,7 +35,14 @@ const Home: NextPage = () => {
     const handleOnChange = (id: number, qty: number) => {
         setBasket((basket) => {
             const product = products!.find((p) => p.id === id)
-            if (product) {
+            if (!product) {
+                return
+            }
+            const existingProduct = basket.findProduct(id)
+            if (existingProduct) {
+                const newQty = existingProduct.qty + qty
+                basket.changeItemQty(id, newQty)
+            } else {
                 basket.addItem(product, qty)
             }
         })
@@ -51,8 +58,8 @@ const Home: NextPage = () => {
         return <ProductList products={productList} onChange={handleOnChange} />
     }
 
-    const basketItems = basket.items.map(({ qty, product }) => {
-        return { qty, ...pick(product, ["id", "name", "cost"]) }
+    const basketItems = basket.items.map(({ qty, product, totalCost }) => {
+        return { qty, ...pick(product, ["id", "name", "cost"]), totalCost }
     })
 
     return (

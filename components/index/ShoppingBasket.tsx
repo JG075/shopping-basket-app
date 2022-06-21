@@ -7,6 +7,7 @@ import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
 import TableFooter from "@mui/material/TableFooter"
 import Paper from "@mui/material/Paper"
+import { currency } from "../../utils/currency"
 
 interface Props {
     items: {
@@ -14,6 +15,7 @@ interface Props {
         qty: number
         name: string
         cost: number
+        totalCost: number
     }[]
 }
 
@@ -30,13 +32,18 @@ const ShoppingBasket: FC<Props> = ({ items }: Props) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {items.map(({ id, qty, name, cost }) => {
+                    {items.map(({ id, qty, name, cost, totalCost }) => {
                         return (
                             <TableRow key={id}>
                                 <TableCell>
                                     {qty} {name}
                                 </TableCell>
-                                <TableCell align="right">{cost}</TableCell>
+                                <TableCell align="right">
+                                    {currency(cost).format()}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {currency(totalCost).format()}
+                                </TableCell>
                             </TableRow>
                         )
                     })}

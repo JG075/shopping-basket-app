@@ -14,9 +14,20 @@ class Basket {
         Object.assign(this, opts)
     }
 
+    findProduct(id: number) {
+        return this.items.find((i) => i.product.id === id)
+    }
+
     addItem(product: Product, qty: number) {
         const productQty = new ProductQty({ product, qty })
         this.items.push(productQty)
+    }
+
+    changeItemQty(id: number, qty: number) {
+        const item = this.findProduct(id)
+        if (item) {
+            item.qty = qty
+        }
     }
 }
 

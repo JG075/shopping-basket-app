@@ -13,6 +13,10 @@ class ProductQty {
     constructor(opts: ProductQtyAttrs) {
         Object.assign(this, opts)
     }
+
+    get totalCost() {
+        return this.product.cost * this.qty
+    }
 }
 
 export default ProductQty

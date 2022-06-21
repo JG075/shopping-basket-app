@@ -2,7 +2,7 @@ import Image from "next/image"
 import { FC } from "react"
 import Paper from "@mui/material/Paper"
 import { Button } from "@mui/material"
-import { GBP } from "../../utils/currency"
+import { currency } from "../../utils/currency"
 
 interface Props {
     id: number
@@ -32,7 +32,7 @@ const ProductListItem: FC<Props> = ({
         >
             <Image src={thumbnail} alt={name} height={100} width={100} />
             <span>{name}</span>
-            <span>{GBP(cost).format()}</span>
+            <span>{currency(cost).format()}</span>
             <Button onClick={() => onChange(id, 1)}>Add to cart</Button>
         </Paper>
     )

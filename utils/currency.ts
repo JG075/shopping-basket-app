@@ -1,3 +1,6 @@
-import currency from "currency.js"
+import { default as currencyjs } from "currency.js"
 
-export const GBP = (value: number) => currency(value, { symbol: "£", separator: "," })
+const GBP = (value: number) =>
+    currencyjs(value, { symbol: "£", separator: "," })
+
+export const currency = (value: number) => GBP(value)
