@@ -1,13 +1,18 @@
 import { FC } from "react"
 
-import Product from "../../models/product"
 import ProductListItem from "./ProductListItem"
 
 interface Props {
-    products: Product[]
+    products: {
+        id: number
+        name: string
+        thumbnail: string
+        cost: number
+    }[]
+    onChange: (id: number, qty: number) => void
 }
 
-const ProductList: FC<Props> = ({ products }: Props) => {
+const ProductList: FC<Props> = ({ products, onChange }: Props) => {
     return (
         <ul
             css={{
@@ -19,10 +24,16 @@ const ProductList: FC<Props> = ({ products }: Props) => {
                 width: "100%",
             }}
         >
-            {products.map(({ id, name, thumbnail, displayCost }) => {
+            {products.map(({ id, name, thumbnail, cost }) => {
                 return (
                     <li key={id}>
-                        <ProductListItem name={name} thumbnail={thumbnail} cost={displayCost} />
+                        <ProductListItem
+                            id={id}
+                            name={name}
+                            thumbnail={thumbnail}
+                            cost={cost}
+                            onChange={onChange}
+                        />
                     </li>
                 )
             })}

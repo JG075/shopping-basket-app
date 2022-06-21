@@ -2,14 +2,23 @@ import Image from "next/image"
 import { FC } from "react"
 import Paper from "@mui/material/Paper"
 import { Button } from "@mui/material"
+import { GBP } from "../../utils/currency"
 
 interface Props {
+    id: number
     name: string
     thumbnail: string
-    cost: string
+    cost: number
+    onChange: (id: number, qty: number) => void
 }
 
-const ProductListItem: FC<Props> = ({ name, thumbnail, cost }: Props) => {
+const ProductListItem: FC<Props> = ({
+    id,
+    name,
+    thumbnail,
+    cost,
+    onChange,
+}: Props) => {
     return (
         <Paper
             sx={{
@@ -23,8 +32,8 @@ const ProductListItem: FC<Props> = ({ name, thumbnail, cost }: Props) => {
         >
             <Image src={thumbnail} alt={name} height={100} width={100} />
             <span>{name}</span>
-            <span>{cost}</span>
-            <Button>Add to cart</Button>
+            <span>{GBP(cost).format()}</span>
+            <Button onClick={() => onChange(id, 1)}>Add to cart</Button>
         </Paper>
     )
 }

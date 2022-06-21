@@ -1,8 +1,9 @@
-import { render, waitFor, waitForElementToBeRemoved } from "@testing-library/react"
+import { waitFor, waitForElementToBeRemoved, within } from "@testing-library/react"
 
 import productApi, { SuccessResponse } from "../api/product"
-import Product from "../models/product"
-import Index from "./index"
+import Product from "../models/Product"
+import { setup } from "../utils/testHelpers"
+import Index from "../pages/index"
 
 jest.mock("../api/product")
 
@@ -12,7 +13,7 @@ describe("Index", () => {
     it("renders a loading state", () => {
         const returnValue = new Promise<SuccessResponse>(() => {})
         productApiMock.get.mockReturnValue(returnValue)
-        const { getByText } = render(<Index />)
+        const { getByText } = setup(<Index />)
         expect(getByText("Loading...")).toBeInTheDocument()
     })
 
@@ -23,7 +24,7 @@ describe("Index", () => {
                 message: "Server error",
             },
         }))
-        const { findByText } = render(<Index />)
+        const { findByText } = setup(<Index />)
         expect(await findByText("Error!")).toBeInTheDocument()
     })
 
@@ -45,7 +46,7 @@ describe("Index", () => {
             ],
         }
         productApiMock.get.mockResolvedValue(mockReponse)
-        const { getByText, getByRole, queryByText } = render(<Index />)
+        const { getByText, getByRole, queryByText } = setup(<Index />)
 
         await waitForElementToBeRemoved(queryByText("Loading..."))
 
@@ -56,5 +57,37 @@ describe("Index", () => {
         })
     })
 
-    it("allows a user to add a product to the cart", () => {})
+    it("allows a user to add a product to the cart and show product information", async () => {
+        const mockReponse = {
+            data: [
+                new Product({
+                    id: 1,
+                    name: "Face Mask",
+                    thumbnail: "/facemask.jpg",
+                    cost: 2.5,
+                }),
+                new Product({
+                    id: 2,
+                    name: "Toilet Roll",
+                    thumbnail: "/toiletroll.jpg",
+                    cost: 0.65,
+                }),
+            ],
+        }
+        productApiMock.get.mockResolvedValue(mockReponse)
+        const { user, findAllByRole, getByLabelText } = setup(<Index />)
+        const listItems = await findAllByRole("listitem")
+
+        await user.click(within(listItems[0]).getByRole("button", { name: /add to cart/i }))
+
+        const withinTable = within(getByLabelText("shopping basket"))
+        const firstProduct = mockReponse.data[0]
+
+        expect(withinTable.getByText(`1 ${firstProduct.name}`)).toBeInTheDocument()
+        expect(withinTable.getByText(firstProduct.cost)).toBeInTheDocument()
+    })
+
+    it("if the user adds more than one item it increments it", () => {
+
+    })
 })
