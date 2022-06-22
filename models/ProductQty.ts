@@ -14,10 +14,6 @@ class ProductQty {
         Object.assign(this, opts)
     }
 
-    get totalCost() {
-        return this.product.cost * this.qty
-    }
-
     get discount() {
         const applicableDiscounts = this.product.discounts.map((d) =>
             d.apply(this.qty)

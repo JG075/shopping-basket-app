@@ -15,12 +15,17 @@ interface Props {
         qty: number
         name: string
         cost: number
-        totalCost: number
         discount: number
     }[]
 }
 
 const ShoppingBasket: FC<Props> = ({ items }: Props) => {
+    const getTotalItemCost = (qty: number, cost: number) => qty * cost
+
+    const grandTotal = items.reduce((prev, { qty, cost, discount }) => {
+        return prev + (getTotalItemCost(qty, cost) - discount)
+    }, 0)
+
     return (
         <TableContainer component={Paper}>
             <Table aria-label="shopping basket">
@@ -33,31 +38,40 @@ const ShoppingBasket: FC<Props> = ({ items }: Props) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {items.map(
-                        ({ id, qty, name, cost, totalCost, discount }) => {
-                            return (
-                                <TableRow key={id}>
-                                    <TableCell>
-                                        {qty} {name}
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        {currency(cost).format()}
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        {currency(totalCost).format()}
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        {currency(discount).format()}
-                                    </TableCell>
-                                </TableRow>
-                            )
-                        }
-                    )}
+                    {items.map(({ id, qty, name, cost, discount }) => {
+                        return (
+                            <TableRow key={id}>
+                                <TableCell>
+                                    {qty} {name}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {currency(cost).format()}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {currency(
+                                        getTotalItemCost(qty, cost)
+                                    ).format()}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {currency(discount).format()}
+                                </TableCell>
+                            </TableRow>
+                        )
+                    })}
                 </TableBody>
-                <TableFooter>
+                <TableFooter
+                    sx={{
+                        td: {
+                            fontSize: "0.875rem",
+                            fontWeight: "bold",
+                        },
+                    }}
+                >
                     <TableRow>
                         <TableCell colSpan={3}>Total to pay:</TableCell>
-                        <TableCell align="right">£x</TableCell>
+                        <TableCell align="right">
+                            {currency(grandTotal).format()}
+                        </TableCell>
                     </TableRow>
                 </TableFooter>
             </Table>

@@ -56,16 +56,13 @@ const Home: NextPage = () => {
         return <ProductList products={productList} onChange={handleOnChange} />
     }
 
-    const basketItems = basket.items.map(
-        ({ qty, product, totalCost, discount }) => {
-            return {
-                qty,
-                ...pick(product, ["id", "name", "cost"]),
-                totalCost,
-                discount,
-            }
+    const basketItems = basket.items.map(({ qty, product, discount }) => {
+        return {
+            qty,
+            ...pick(product, ["id", "name", "cost"]),
+            discount,
         }
-    )
+    })
 
     return (
         <div className={styles.container}>
