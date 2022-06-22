@@ -33,7 +33,18 @@ const ProductListItem: FC<Props> = ({
             <Image src={thumbnail} alt={name} height={100} width={100} />
             <span>{name}</span>
             <span>{currency(cost).format()}</span>
-            <Button onClick={() => onChange(id, 1)}>Add to cart</Button>
+            <div
+                css={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                }}
+            >
+                <Button onClick={() => onChange(id, 1)}>Add to cart</Button>
+                <Button onClick={() => onChange(id, -1)} color="error">
+                    Remove item
+                </Button>
+            </div>
         </Paper>
     )
 }
