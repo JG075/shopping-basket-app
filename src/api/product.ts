@@ -47,6 +47,7 @@ const get = () => {
     return new Promise(
         (
             success: (arg: SuccessResponse) => void,
+            // @ts-ignore
             reject: (arg: RejectResponse) => void
         ) => {
             setTimeout(() => {
