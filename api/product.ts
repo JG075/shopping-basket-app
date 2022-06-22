@@ -23,6 +23,7 @@ const MOCK_RESPONSE = {
                 {
                     qtyRequirement: 2,
                     amount: 1,
+                    text: "Two Face Masks for £4",
                 },
             ],
         },
@@ -35,6 +36,7 @@ const MOCK_RESPONSE = {
                 {
                     qtyRequirement: 6,
                     amount: 0.65,
+                    text: "Six rolls of toilet paper for the price of five",
                 },
             ],
         },

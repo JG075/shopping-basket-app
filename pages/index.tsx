@@ -51,7 +51,10 @@ const Home: NextPage = () => {
         if (!products) return <p>Loading...</p>
 
         const productList = products.map((p) => {
-            return pick(p, ["id", "name", "thumbnail", "cost"])
+            return {
+                ...pick(p, ["id", "name", "thumbnail", "cost"]),
+                discounts: p.discounts.map((d) => d.text),
+            }
         })
         return <ProductList products={productList} onChange={handleOnChange} />
     }

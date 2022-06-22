@@ -8,6 +8,7 @@ interface Props {
         name: string
         thumbnail: string
         cost: number
+        discounts: string[]
     }[]
     onChange: (id: number, qty: number) => void
 }
@@ -24,7 +25,7 @@ const ProductList: FC<Props> = ({ products, onChange }: Props) => {
                 width: "100%",
             }}
         >
-            {products.map(({ id, name, thumbnail, cost }) => {
+            {products.map(({ id, name, thumbnail, cost, discounts }) => {
                 return (
                     <li key={id}>
                         <ProductListItem
@@ -33,6 +34,7 @@ const ProductList: FC<Props> = ({ products, onChange }: Props) => {
                             thumbnail={thumbnail}
                             cost={cost}
                             onChange={onChange}
+                            discounts={discounts}
                         />
                     </li>
                 )

@@ -24,14 +24,26 @@ const commonMockResponse = {
             name: "Face Mask",
             thumbnail: "/facemask.jpg",
             cost: 2.5,
-            discounts: [],
+            discounts: [
+                new Discount({
+                    qtyRequirement: 2,
+                    amount: 1,
+                    text: "Two Face Masks for £4",
+                }),
+            ],
         }),
         new Product({
             id: 2,
             name: "Toilet Roll",
             thumbnail: "/toiletroll.jpg",
             cost: 0.65,
-            discounts: [],
+            discounts: [
+                new Discount({
+                    qtyRequirement: 6,
+                    amount: 0.65,
+                    text: "Six rolls of toilet paper for the price of five",
+                }),
+            ],
         }),
     ],
 }
@@ -81,7 +93,12 @@ describe("Index", () => {
 
         await waitForElementToBeRemoved(queryByText("Loading..."))
 
-        for await (const { name, thumbnail, cost } of commonMockResponse.data) {
+        for await (const {
+            name,
+            thumbnail,
+            cost,
+            discounts,
+        } of commonMockResponse.data) {
             expect(getByText(name)).toBeInTheDocument()
             await waitFor(() =>
                 expect(getByRole("img", { name })).toHaveAttribute(
@@ -90,6 +107,10 @@ describe("Index", () => {
                 )
             )
             expect(getByText(currency(cost).format())).toBeInTheDocument()
+            const firstDiscountText = discounts[0].text
+            expect(
+                getByText(firstDiscountText, { exact: false })
+            ).toBeInTheDocument()
         }
     })
 
@@ -173,25 +194,14 @@ describe("Index", () => {
     })
 
     it("shows a discount when the requirement is met", async () => {
-        const discount = new Discount({ qtyRequirement: 2, amount: 1 })
-        const mockReponse = {
-            data: [
-                new Product({
-                    id: 1,
-                    name: "Face Mask",
-                    thumbnail: "/facemask.jpg",
-                    cost: 2.5,
-                    discounts: [discount],
-                }),
-            ],
-        }
-        productApiMock.get.mockResolvedValue(mockReponse)
+        productApiMock.get.mockResolvedValue(commonMockResponse)
         const { user, findAllByRole, getAllByRole } = setup(<Index />)
         const listItems = await findAllByRole("listitem")
 
         await addItemToCart(user, listItems[0], 1)
 
         const withinTableBody = within(getAllByRole("rowgroup")[1])
+        const discount = commonMockResponse.data[0].discounts[0]
         const getCurrencyText = (amount = discount.amount) =>
             currency(Math.abs(amount)).format()
 
@@ -211,35 +221,17 @@ describe("Index", () => {
     })
 
     it("shows the total amount of all items with discounts applied", async () => {
-        const p1Discount = new Discount({ qtyRequirement: 2, amount: 1 })
-        const p2Discount = new Discount({ qtyRequirement: 6, amount: 2.5 })
-        const mockReponse = {
-            data: [
-                new Product({
-                    id: 1,
-                    name: "Face Mask",
-                    thumbnail: "/facemask.jpg",
-                    cost: 2.5,
-                    discounts: [p1Discount],
-                }),
-                new Product({
-                    id: 2,
-                    name: "Toilet roll",
-                    thumbnail: "/toiletroll.jpg",
-                    cost: 3,
-                    discounts: [p2Discount],
-                }),
-            ],
-        }
-        productApiMock.get.mockResolvedValue(mockReponse)
+        productApiMock.get.mockResolvedValue(commonMockResponse)
         const { user, findAllByRole, getAllByRole } = setup(<Index />)
         const listItems = await findAllByRole("listitem")
+        const products = commonMockResponse.data
+        const p1Discount = products[0].discounts[0]
+        const p2Discount = products[1].discounts[0]
 
         await addItemToCart(user, listItems[0], p1Discount.qtyRequirement)
         await addItemToCart(user, listItems[1], p2Discount.qtyRequirement)
 
         const withinTableFooter = within(getAllByRole("rowgroup")[2])
-        const products = mockReponse.data
         const p1Total =
             p1Discount.qtyRequirement * products[0].cost - p1Discount.amount
         const p2Total =

@@ -3,6 +3,7 @@ import { immerable } from "immer"
 interface DiscountAttrs {
     qtyRequirement: number
     amount: number
+    text: string
 }
 
 interface Discount extends DiscountAttrs {}
