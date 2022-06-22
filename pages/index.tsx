@@ -35,13 +35,11 @@ const Home: NextPage = () => {
     const handleOnChange = (id: number, qty: number) => {
         setBasket((basket) => {
             const product = products!.find((p) => p.id === id)
-            if (!product) {
+            if (!product || qty === 0) {
                 return
             }
-            const existingProduct = basket.findProduct(id)
-            if (existingProduct) {
-                const newQty = existingProduct.qty + qty
-                basket.changeItemQty(id, newQty)
+            if (basket.findProduct(id)) {
+                basket.updateItemQty(id, qty)
             } else {
                 basket.addItem(product, qty)
             }

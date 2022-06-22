@@ -18,15 +18,30 @@ class Basket {
         return this.items.find((i) => i.product.id === id)
     }
 
+    findProductIndex(id: number) {
+        return this.items.findIndex((i) => i.product.id === id)
+    }
+
     addItem(product: Product, qty: number) {
+        if (qty < 1) {
+            return
+        }
         const productQty = new ProductQty({ product, qty })
         this.items.push(productQty)
     }
 
-    changeItemQty(id: number, qty: number) {
+    deleteItem(id: number) {
+        const index = this.findProductIndex(id)
+        this.items.splice(index, 1)
+    }
+
+    updateItemQty(id: number, qty: number) {
         const item = this.findProduct(id)
         if (item) {
-            item.qty = qty
+            item.qty += qty
+            if (item.qty <= 0) {
+                this.deleteItem(id)
+            }
         }
     }
 }

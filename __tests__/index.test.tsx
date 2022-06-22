@@ -35,9 +35,21 @@ const commonMockResponse = {
 
 const getAddToCartButton = (listItem: HTMLElement) =>
     within(listItem).getByRole("button", { name: /add to cart/i })
+const getRemoveItemButton = (listItem: HTMLElement) =>
+    within(listItem).getByRole("button", { name: /remove item/i })
+
 const addItemToCart = (user: UserEvent, listItem: HTMLElement, qty: number) => {
     const addToCartButton = getAddToCartButton(listItem)
     const promises = times(qty, user.click.bind(user, addToCartButton))
+    return Promise.all(promises)
+}
+const removeItemFromCart = (
+    user: UserEvent,
+    listItem: HTMLElement,
+    qty: number
+) => {
+    const removeItemButton = getRemoveItemButton(listItem)
+    const promises = times(qty, user.click.bind(user, removeItemButton))
     return Promise.all(promises)
 }
 
@@ -122,24 +134,38 @@ describe("Index", () => {
         const { user, findAllByRole, getByLabelText } = setup(<Index />)
         const listItems = await findAllByRole("listitem")
         const qtyToAdd = 2
+        const qtyToRemove = 1
 
         await addItemToCart(user, listItems[0], qtyToAdd)
-
-        const removeButton = within(listItems[0]).getByRole("button", {
-            name: /remove item/i,
-        })
-
-        await user.click(removeButton)
+        await removeItemFromCart(user, listItems[0], qtyToRemove)
 
         const withinTable = within(getByLabelText("shopping basket"))
         const firstProduct = commonMockResponse.data[0]
 
-        const newQty = qtyToAdd - 1
+        const newQty = qtyToAdd - qtyToRemove
         expect(
             withinTable.getByText(`${newQty} ${firstProduct.name}`)
         ).toBeInTheDocument()
         expect(
             withinTable.getAllByText(currency(firstProduct.cost).format())
         ).toHaveLength(2)
+    })
+
+    it("removes an item from the basket when the quantity reaches 0", async () => {
+        productApiMock.get.mockResolvedValue(commonMockResponse)
+        const { user, findAllByRole, getByLabelText } = setup(<Index />)
+        const listItems = await findAllByRole("listitem")
+        const qtyToAdd = 1
+        const qtyToRemove = qtyToAdd
+
+        await addItemToCart(user, listItems[0], qtyToAdd)
+        await removeItemFromCart(user, listItems[0], qtyToRemove)
+
+        const withinTable = within(getByLabelText("shopping basket"))
+        const firstProduct = commonMockResponse.data[0]
+
+        expect(
+            withinTable.queryByText(firstProduct.name)
+        ).not.toBeInTheDocument()
     })
 })
