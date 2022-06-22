@@ -70,12 +70,15 @@ const Home: NextPage = () => {
     return (
         <div className={styles.container}>
             <Head>
-                <title>Nextjs Shopping Cart</title>
-                <meta name="description" content="A next shopping cart app" />
+                <title>Shopping Basket App</title>
+                <meta
+                    name="description"
+                    content="A shopping basket app built with Nextjs"
+                />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <main className={styles.main}>
-                <h1>Nextjs Shopping Cart</h1>
+                <h1>Shopping Basket App</h1>
                 <section data-id="products">
                     <SubHeading name="Products" />
                     {renderProducts()}
