@@ -16,6 +16,7 @@ interface Props {
         name: string
         cost: number
         totalCost: number
+        discount: number
     }[]
 }
 
@@ -32,21 +33,26 @@ const ShoppingBasket: FC<Props> = ({ items }: Props) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {items.map(({ id, qty, name, cost, totalCost }) => {
-                        return (
-                            <TableRow key={id}>
-                                <TableCell>
-                                    {qty} {name}
-                                </TableCell>
-                                <TableCell align="right">
-                                    {currency(cost).format()}
-                                </TableCell>
-                                <TableCell align="right">
-                                    {currency(totalCost).format()}
-                                </TableCell>
-                            </TableRow>
-                        )
-                    })}
+                    {items.map(
+                        ({ id, qty, name, cost, totalCost, discount }) => {
+                            return (
+                                <TableRow key={id}>
+                                    <TableCell>
+                                        {qty} {name}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        {currency(cost).format()}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        {currency(totalCost).format()}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        {currency(discount).format()}
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        }
+                    )}
                 </TableBody>
                 <TableFooter>
                     <TableRow>

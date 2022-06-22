@@ -1,3 +1,4 @@
+import Discount from "../models/Discount"
 import Product from "../models/Product"
 
 export interface SuccessResponse {
@@ -18,25 +19,43 @@ const MOCK_RESPONSE = {
             name: "Face Mask",
             thumbnail: "/facemask.jpg",
             cost: 2.5,
+            discounts: [
+                {
+                    qtyRequirement: 2,
+                    amount: 1,
+                },
+            ],
         },
         {
             id: 2,
             name: "Toilet Roll",
             thumbnail: "/toiletroll.jpg",
             cost: 0.65,
+            discounts: [
+                {
+                    qtyRequirement: 6,
+                    amount: 0.65,
+                },
+            ],
         },
     ],
 }
 
 const get = () => {
-    return new Promise((success: (arg: SuccessResponse) => void, reject: (arg: RejectResponse) => void) => {
-        setTimeout(() => {
-            const parsedReponse = MOCK_RESPONSE.data.map((p) => {
-                return new Product(p)
-            })
-            success({ data: parsedReponse })
-        }, 1000)
-    })
+    return new Promise(
+        (
+            success: (arg: SuccessResponse) => void,
+            reject: (arg: RejectResponse) => void
+        ) => {
+            setTimeout(() => {
+                const parsedReponse = MOCK_RESPONSE.data.map((p) => {
+                    const discounts = p.discounts.map((d) => new Discount(d))
+                    return new Product({ ...p, discounts })
+                })
+                success({ data: parsedReponse })
+            }, 1000)
+        }
+    )
 }
 
 const api = {
